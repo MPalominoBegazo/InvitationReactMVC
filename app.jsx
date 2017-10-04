@@ -13,24 +13,33 @@ class Model {
     this.callback();
   }
 
-  addGuests(name){
+  addGuests(name) {
     this.guests.push({
       id: Utils.uuid(),
-      name:name,
+      name: name,
       confirmed: false
     });
     this.notify();
   }
-/*
-  confirmed(){
-    if(this.guests[id].ckecked){
-      confirmed: true
+
+  confirmed(event) {
+    const checkbox = event;
+    const checked = checkbox.checked;
+    const listItem = checkbox.parentNode.parentNode;
+
+    if (checked) {
+      listItem.className = 'responded';
+   
+    } else {
+      listItem.className = '';
+     
     }
-  }*/
+    
+  }
   removeGuest(guest) {
     this.guests = this.guests.filter(item => item !== guest);
     this.notify();
- }
+  }
 }
 
 const Header = () => {
@@ -39,10 +48,10 @@ const Header = () => {
       <h1>RSVP</h1>
       <p> Registration App </p>
       <form id="registrar" onSubmit={e => {
-          e.preventDefault();
-          model.addGuests(model.inputValue);
-        }}>
-        <input type="text" name="name" placeholder="Invite Someone" onChange={e => (model.inputValue = e.target.value)}/>
+        e.preventDefault();
+        model.addGuests(model.inputValue);
+      }}>
+        <input type="text" name="name" placeholder="Invite Someone" onChange={e => (model.inputValue = e.target.value)} />
         <button type="submit" name="submit" value="submit">Submit</button>
       </form>
     </header>
@@ -50,13 +59,19 @@ const Header = () => {
 }
 
 const getGuestList = () => {
+  const onOptionSelect = (e) => {
+    model.confirmed(e.target);
+  };
+
   return model.guests.map((guest, index) => {
     return (
       <li key={guest.id}>
         {guest.name}
         <label htmlFor>
           Confirmed
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            onChange={onOptionSelect} />
         </label>
         <button onClick={() => model.removeGuest(guest)}>remove</button>
       </li>
