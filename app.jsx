@@ -1,9 +1,8 @@
 class Model {
   constructor() {
-    this.index = 0;
     this.guests = [];
     this.inputValue = null;
-    this.callback = null;
+    this.callback = undefined;
   }
 
   subscribe(render) {
@@ -16,12 +15,22 @@ class Model {
 
   addGuests(name){
     this.guests.push({
+      id: Utils.uuid(),
       name:name,
       confirmed: false
     });
-    console.log(this.guests);
     this.notify();
   }
+/*
+  confirmed(){
+    if(this.guests[id].ckecked){
+      confirmed: true
+    }
+  }*/
+  removeGuest(guest) {
+    this.guests = this.guests.filter(item => item !== guest);
+    this.notify();
+ }
 }
 
 const Header = () => {
@@ -43,13 +52,13 @@ const Header = () => {
 const getGuestList = () => {
   return model.guests.map((guest, index) => {
     return (
-      <li>
+      <li key={guest.id}>
         {guest.name}
         <label htmlFor>
           Confirmed
           <input type="checkbox" />
         </label>
-        <button>remove</button>
+        <button onClick={() => model.removeGuest(guest)}>remove</button>
       </li>
     );
   })
