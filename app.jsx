@@ -23,21 +23,20 @@ class Model {
     this.notify();
   }
 
-  confirmed(event) {
-    
+  confirmed(event, guest) {
     const checkbox = event;
     const checked = checkbox.checked;
     const listItem = checkbox.parentNode.parentNode;
-    //console.log(listItem.textContent);
+    guest.confirmed = checked;
 
-    if (checked) {
+    if (guest.confirmed) {
       listItem.className = 'responded';
    
     } else {
       listItem.className = '';
      
     }
-    
+      
   }
   removeGuest(guest) {
     this.guests = this.guests.filter(item => item !== guest);
@@ -76,7 +75,7 @@ const getGuestList = () => {
           Confirmed
           <input
             type="checkbox"
-            onChange={onOptionSelect} />
+            onChange={e => (model.confirmed(e.target,guest))}/>
         </label>
         <button onClick={() => model.removeGuest(guest)}>remove</button>
       </li>
