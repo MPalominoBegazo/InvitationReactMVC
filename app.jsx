@@ -2,7 +2,7 @@ class Model {
   constructor() {
     this.guests = [];
     this.inputValue = null;
-    this.callback = undefined;
+    this.callback = null;
   }
 
   subscribe(render) {
@@ -16,16 +16,19 @@ class Model {
   addGuests(name) {
     this.guests.push({
       id: Utils.uuid(),
-      name: name,
+      name: name.value,
       confirmed: false
     });
+    this.inputValue.value = "";
     this.notify();
   }
 
   confirmed(event) {
+    
     const checkbox = event;
     const checked = checkbox.checked;
     const listItem = checkbox.parentNode.parentNode;
+    //console.log(listItem.textContent);
 
     if (checked) {
       listItem.className = 'responded';
@@ -39,6 +42,7 @@ class Model {
   removeGuest(guest) {
     this.guests = this.guests.filter(item => item !== guest);
     this.notify();
+
   }
 }
 
@@ -51,7 +55,7 @@ const Header = () => {
         e.preventDefault();
         model.addGuests(model.inputValue);
       }}>
-        <input type="text" name="name" placeholder="Invite Someone" onChange={e => (model.inputValue = e.target.value)} />
+        <input type="text" name="name" placeholder="Invite Someone" onChange={e => (model.inputValue = e.target)} />
         <button type="submit" name="submit" value="submit">Submit</button>
       </form>
     </header>
@@ -60,6 +64,7 @@ const Header = () => {
 
 const getGuestList = () => {
   const onOptionSelect = (e) => {
+    //console.log(guest);
     model.confirmed(e.target);
   };
 
